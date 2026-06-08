@@ -16,289 +16,82 @@
     --muted: #666;
     --r: 8px;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'DM Mono', monospace;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 16px;
-  }
-
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-  }
-
-  h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.4rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-  }
-
+  body { font-family: 'DM Mono', monospace; background: var(--bg); color: var(--text); min-height: 100vh; padding: 16px; }
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  h1 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
   h1 span { color: var(--accent); }
+  .total-geral { font-size: 0.75rem; color: var(--muted); text-align: right; }
+  .total-geral strong { display: block; font-size: 1.1rem; color: var(--accent); font-family: 'Syne', sans-serif; }
 
-  .total-geral {
-    font-size: 0.75rem;
-    color: var(--muted);
-    text-align: right;
-  }
+  /* TABS */
+  .tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+  .tab { flex: 1; padding: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); cursor: pointer; text-align: center; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s; }
+  .tab.ativo { border-color: var(--accent); color: var(--accent); }
 
-  .total-geral strong {
-    display: block;
-    font-size: 1.1rem;
-    color: var(--accent);
-    font-family: 'Syne', sans-serif;
-  }
+  /* SEÇÕES */
+  .secao { display: none; }
+  .secao.ativo { display: block; }
 
   /* RESUMO */
-  .resumo {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 24px;
-  }
-
-  .card-pessoa {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 12px;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-
-  .card-pessoa.ativo {
-    border-color: var(--accent);
-  }
-
-  .card-pessoa::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 3px; height: 100%;
-    background: var(--accent);
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
+  .resumo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .card-pessoa { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; cursor: pointer; transition: border-color 0.2s; position: relative; overflow: hidden; }
+  .card-pessoa.ativo { border-color: var(--accent); }
+  .card-pessoa::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent); opacity: 0; transition: opacity 0.2s; }
   .card-pessoa.ativo::before { opacity: 1; }
+  .pessoa-nome { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .pessoa-valor { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
+  .pessoa-qtd { font-size: 0.6rem; color: var(--muted); margin-top: 2px; }
 
-  .pessoa-nome {
-    font-size: 0.65rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-  }
-
-  .pessoa-valor {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .pessoa-qtd {
-    font-size: 0.6rem;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  /* FORMULÁRIO */
-  .form-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 16px;
-    margin-bottom: 24px;
-  }
-
-  .form-title {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-
-  .form-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-
-  input, select {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.85rem;
-    padding: 10px 12px;
-    outline: none;
-    transition: border-color 0.2s;
-    width: 100%;
-  }
-
+  /* FORM */
+  .form-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; margin-bottom: 20px; }
+  .form-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; }
+  .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  input, select { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.85rem; padding: 10px 12px; outline: none; transition: border-color 0.2s; width: 100%; }
   input:focus, select:focus { border-color: var(--accent); }
-
-  input[type="number"] { width: 120px; min-width: 120px; }
-
   select option { background: #1a1a1e; }
-
-  .btn-add {
-    background: var(--accent);
-    color: #0d0d0f;
-    border: none;
-    border-radius: var(--r);
-    font-family: 'Syne', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 800;
-    padding: 10px 20px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 4px;
-    transition: opacity 0.2s, transform 0.1s;
-  }
-
+  .parcelas-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .toggle-parcela { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 8px 12px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+  .toggle-parcela.ativo { border-color: var(--accent2); color: var(--accent2); }
+  .parcelas-input { display: none; }
+  .parcelas-input.show { display: flex; flex: 1; align-items: center; gap: 6px; }
+  .parcelas-input input { width: 70px; min-width: 70px; text-align: center; }
+  .parcelas-input span { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+  .btn-add { background: var(--accent); color: #0d0d0f; border: none; border-radius: var(--r); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; padding: 11px; cursor: pointer; width: 100%; margin-top: 4px; transition: opacity 0.2s, transform 0.1s; }
   .btn-add:active { transform: scale(0.98); opacity: 0.9; }
 
-  /* LANÇAMENTOS */
-  .lancamentos-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  .lancamentos-title {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--muted);
-  }
-
-  .filtro-pessoa {
-    font-size: 0.65rem;
-    color: var(--accent);
-    cursor: pointer;
-    text-decoration: underline;
-    background: none;
-    border: none;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .lista {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    animation: fadeIn 0.2s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-4px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
+  /* LISTA */
+  .lancamentos-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .lancamentos-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .filtro-btn { font-size: 0.65rem; color: var(--accent); cursor: pointer; background: none; border: none; font-family: 'DM Mono', monospace; }
+  .lista { display: flex; flex-direction: column; gap: 6px; }
+  .item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 10px 12px; display: flex; align-items: center; gap: 8px; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
   .item-info { flex: 1; min-width: 0; }
-
-  .item-desc {
-    font-size: 0.8rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .item-meta {
-    font-size: 0.62rem;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  .item-tag {
-    font-size: 0.6rem;
-    padding: 2px 7px;
-    border-radius: 20px;
-    background: var(--border);
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  .item-valor {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--accent2);
-    white-space: nowrap;
-  }
-
-  .btn-del {
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 2px 4px;
-    line-height: 1;
-    transition: color 0.2s;
-  }
-
+  .item-desc { font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-meta { font-size: 0.62rem; color: var(--muted); margin-top: 2px; }
+  .item-parcela { display: inline-block; font-size: 0.6rem; padding: 1px 6px; border-radius: 10px; background: rgba(255,107,53,0.15); color: var(--accent2); margin-left: 4px; }
+  .item-valor { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--accent2); white-space: nowrap; }
+  .btn-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; padding: 2px 4px; line-height: 1; transition: color 0.2s; }
   .btn-del:hover { color: #ff4444; }
+  .empty { text-align: center; padding: 32px; color: var(--muted); font-size: 0.8rem; }
 
-  .empty {
-    text-align: center;
-    padding: 32px;
-    color: var(--muted);
-    font-size: 0.8rem;
-  }
+  /* PESSOAS */
+  .pessoas-lista { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .pessoa-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .pessoa-item-nome { font-size: 0.85rem; }
+  .btn-remover-pessoa { background: none; border: 1px solid #ff444444; border-radius: 6px; color: #ff6666; font-family: 'DM Mono', monospace; font-size: 0.7rem; padding: 4px 10px; cursor: pointer; transition: all 0.2s; }
+  .btn-remover-pessoa:hover { background: #ff444422; }
+  .add-pessoa-row { display: flex; gap: 8px; }
+  .btn-add-pessoa { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--r); color: var(--accent); font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 10px 16px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+  .btn-add-pessoa:active { opacity: 0.8; }
 
   /* WHATSAPP */
-  .btn-wpp {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: #25d366;
-    color: #fff;
-    border: none;
-    border-radius: var(--r);
-    font-family: 'Syne', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    padding: 12px;
-    width: 100%;
-    margin-top: 20px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-
+  .btn-wpp { display: flex; align-items: center; justify-content: center; gap: 8px; background: #25d366; color: #fff; border: none; border-radius: var(--r); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px; width: 100%; margin-top: 16px; cursor: pointer; transition: opacity 0.2s; }
   .btn-wpp:active { opacity: 0.85; }
+  .aviso { font-size: 0.62rem; color: var(--muted); text-align: center; margin-top: 8px; }
 
-  .aviso-expiry {
-    font-size: 0.62rem;
-    color: var(--muted);
-    text-align: center;
-    margin-top: 8px;
-  }
+  .cor-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
 </style>
 </head>
 <body>
@@ -311,177 +104,311 @@
   </div>
 </header>
 
-<!-- RESUMO POR PESSOA -->
-<div class="resumo" id="resumo"></div>
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab ativo" onclick="setTab('resumo')">Resumo</div>
+  <div class="tab" onclick="setTab('lancar')">Lançar</div>
+  <div class="tab" onclick="setTab('pessoas')">Pessoas</div>
+</div>
 
-<!-- FORMULÁRIO -->
-<div class="form-section">
-  <div class="form-title">+ novo lançamento</div>
-  <div class="form-row">
-    <input type="text" id="descricao" placeholder="Descrição do gasto" />
+<!-- ABA RESUMO -->
+<div class="secao ativo" id="tab-resumo">
+  <div class="resumo" id="resumo"></div>
+  <div class="lancamentos-header">
+    <span class="lancamentos-title">lançamentos</span>
+    <button class="filtro-btn" id="btnFiltro" onclick="limparFiltro()">todos</button>
   </div>
-  <div class="form-row">
-    <input type="number" id="valor" placeholder="R$ 0,00" step="0.01" min="0" />
-    <select id="pessoa">
-      <option value="">Quem?</option>
-      <option>Reizinho</option>
-      <option>Bruna</option>
-      <option>Eduardo</option>
-      <option>Felipe</option>
-      <option>Gicélia</option>
-    </select>
+  <div class="lista" id="lista"></div>
+  <button class="btn-wpp" onclick="exportarWhatsApp()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.047L.786 23.207a.5.5 0 0 0 .619.619l4.195-1.498A11.953 11.953 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.371l-.36-.214-3.724 1.329 1.353-3.648-.235-.374A9.818 9.818 0 0 1 12 2.182c5.426 0 9.818 4.392 9.818 9.818 0 5.427-4.392 9.818-9.818 9.818z"/></svg>
+    Exportar Resumo
+  </button>
+  <div class="aviso">Gastos simples: removidos após 60 dias · Parcelados: mantidos até última parcela</div>
+</div>
+
+<!-- ABA LANÇAR -->
+<div class="secao" id="tab-lancar">
+  <div class="form-section">
+    <div class="form-title">+ novo lançamento</div>
+    <div class="form-row">
+      <input type="text" id="descricao" placeholder="Descrição do gasto" />
+    </div>
+    <div class="form-row">
+      <input type="number" id="valor" placeholder="R$ valor" step="0.01" min="0" />
+      <select id="pessoa"></select>
+    </div>
+    <div class="parcelas-row">
+      <button class="toggle-parcela" id="btnParcela" onclick="toggleParcela()">+ Parcelar</button>
+      <div class="parcelas-input" id="parcelasInput">
+        <input type="number" id="numParcelas" placeholder="ex: 5" min="2" max="48" />
+        <span>parcelas</span>
+      </div>
+    </div>
+    <button class="btn-add" onclick="adicionar()">ADICIONAR</button>
   </div>
-  <button class="btn-add" onclick="adicionar()">ADICIONAR</button>
 </div>
 
-<!-- LISTA -->
-<div class="lancamentos-header">
-  <span class="lancamentos-title">lançamentos</span>
-  <button class="filtro-pessoa" id="btnFiltro" onclick="limparFiltro()">todos</button>
+<!-- ABA PESSOAS -->
+<div class="secao" id="tab-pessoas">
+  <div class="form-section">
+    <div class="form-title">gerenciar pessoas</div>
+    <div class="pessoas-lista" id="pessoasLista"></div>
+    <div class="add-pessoa-row">
+      <input type="text" id="novaPessoa" placeholder="Nome da pessoa" />
+      <button class="btn-add-pessoa" onclick="adicionarPessoa()">ADD</button>
+    </div>
+  </div>
 </div>
-
-<div class="lista" id="lista">
-  <div class="empty">Nenhum lançamento ainda.</div>
-</div>
-
-<!-- EXPORTAR -->
-<button class="btn-wpp" onclick="exportarWhatsApp()">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.047L.786 23.207a.5.5 0 0 0 .619.619l4.195-1.498A11.953 11.953 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.371l-.36-.214-3.724 1.329 1.353-3.648-.235-.374A9.818 9.818 0 0 1 12 2.182c5.426 0 9.818 4.392 9.818 9.818 0 5.427-4.392 9.818-9.818 9.818z"/></svg>
-  Exportar Resumo
-</button>
-<div class="aviso-expiry">Lançamentos com mais de 2 meses são removidos automaticamente</div>
 
 <script>
-const PESSOAS = ['Reizinho','Bruna','Eduardo','Felipe','Gicélia'];
-const CORES = {'Reizinho':'#c8f135','Bruna':'#ff6b35','Eduardo':'#35b8ff','Felipe':'#b035ff','Gicélia':'#ff35a8'};
+const CORES = ['#c8f135','#ff6b35','#35b8ff','#b035ff','#ff35a8','#35ffd4','#ffd435','#ff3535'];
+
+let parcelarAtivo = false;
 let filtroAtivo = null;
 
-function salvar(dados) {
-  localStorage.setItem('gastos_cartao', JSON.stringify(dados));
+// ---- STORAGE ----
+function salvarPessoas(p) { localStorage.setItem('gc_pessoas', JSON.stringify(p)); }
+function carregarPessoas() {
+  const raw = localStorage.getItem('gc_pessoas');
+  return raw ? JSON.parse(raw) : [];
 }
-
-function carregar() {
-  const raw = localStorage.getItem('gastos_cartao');
+function salvarGastos(g) { localStorage.setItem('gc_gastos', JSON.stringify(g)); }
+function carregarGastos() {
+  const raw = localStorage.getItem('gc_gastos');
   if (!raw) return [];
-  const dados = JSON.parse(raw);
-  const limite = Date.now() - (60 * 24 * 60 * 60 * 1000); // 60 dias
-  return dados.filter(d => d.ts > limite);
+  const gastos = JSON.parse(raw);
+  const agora = Date.now();
+  const limite60 = agora - (60 * 24 * 60 * 60 * 1000);
+  return gastos.filter(g => {
+    if (g.totalParcelas && g.totalParcelas > 1) return true; // parcelado: nunca expira automaticamente
+    return g.ts > limite60;
+  });
 }
 
+// ---- TABS ----
+function setTab(nome) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const nomes = ['resumo','lanctar','pessoas']; // não usado diretamente
+    t.classList.remove('ativo');
+  });
+  document.querySelectorAll('.tab')[['resumo','lanctar','pessoas'].indexOf(nome) === -1 ? ['resumo','lancar','pessoas'].indexOf(nome) : 0].classList.add('ativo');
+  document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativo'));
+  document.getElementById('tab-' + nome).classList.add('ativo');
+  // corrige tab highlight
+  const tabs = document.querySelectorAll('.tab');
+  const idx = ['resumo','lancar','pessoas'].indexOf(nome);
+  tabs.forEach(t => t.classList.remove('ativo'));
+  if (idx >= 0) tabs[idx].classList.add('ativo');
+  if (nome === 'resumo') renderizar();
+  if (nome === 'lancar') renderSelectPessoa();
+  if (nome === 'pessoas') renderPessoas();
+}
+
+// ---- PARCELA TOGGLE ----
+function toggleParcela() {
+  parcelarAtivo = !parcelarAtivo;
+  document.getElementById('btnParcela').classList.toggle('ativo', parcelarAtivo);
+  document.getElementById('parcelasInput').classList.toggle('show', parcelarAtivo);
+  document.getElementById('btnParcela').textContent = parcelarAtivo ? '✕ Parcelar' : '+ Parcelar';
+}
+
+// ---- PESSOAS ----
+function corPessoa(idx) { return CORES[idx % CORES.length]; }
+
+function renderSelectPessoa() {
+  const pessoas = carregarPessoas();
+  const sel = document.getElementById('pessoa');
+  sel.innerHTML = '<option value="">Quem?</option>' +
+    pessoas.map(p => `<option value="${p}">${p}</option>`).join('');
+}
+
+function renderPessoas() {
+  const pessoas = carregarPessoas();
+  const el = document.getElementById('pessoasLista');
+  if (pessoas.length === 0) {
+    el.innerHTML = '<div class="empty">Nenhuma pessoa cadastrada.</div>';
+    return;
+  }
+  el.innerHTML = pessoas.map((p, i) => `
+    <div class="pessoa-item">
+      <span><span class="cor-dot" style="background:${corPessoa(i)}"></span>${p}</span>
+      <button class="btn-remover-pessoa" onclick="removerPessoa('${p}')">remover</button>
+    </div>
+  `).join('');
+}
+
+function adicionarPessoa() {
+  const input = document.getElementById('novaPessoa');
+  const nome = input.value.trim();
+  if (!nome) return;
+  const pessoas = carregarPessoas();
+  if (pessoas.includes(nome)) { alert('Nome já cadastrado.'); return; }
+  pessoas.push(nome);
+  salvarPessoas(pessoas);
+  input.value = '';
+  renderPessoas();
+}
+
+function removerPessoa(nome) {
+  if (!confirm(`Remover ${nome}?`)) return;
+  const pessoas = carregarPessoas().filter(p => p !== nome);
+  salvarPessoas(pessoas);
+  renderPessoas();
+}
+
+// ---- LANÇAMENTOS ----
 function adicionar() {
   const desc = document.getElementById('descricao').value.trim();
   const val = parseFloat(document.getElementById('valor').value);
   const pessoa = document.getElementById('pessoa').value;
+  const parcelas = parcelarAtivo ? parseInt(document.getElementById('numParcelas').value) : 1;
 
   if (!desc) { alert('Informe a descrição.'); return; }
   if (!val || val <= 0) { alert('Informe um valor válido.'); return; }
   if (!pessoa) { alert('Selecione a pessoa.'); return; }
+  if (parcelarAtivo && (!parcelas || parcelas < 2)) { alert('Informe o número de parcelas (mínimo 2).'); return; }
 
-  const dados = carregar();
-  dados.unshift({ id: Date.now(), desc, val, pessoa, ts: Date.now() });
-  salvar(dados);
+  const gastos = carregarGastos();
+  const grupoId = Date.now();
+
+  if (parcelas > 1) {
+    for (let i = 1; i <= parcelas; i++) {
+      gastos.unshift({
+        id: grupoId + i,
+        grupoId,
+        desc,
+        val,
+        pessoa,
+        parcelaAtual: i,
+        totalParcelas: parcelas,
+        ts: Date.now()
+      });
+    }
+  } else {
+    gastos.unshift({ id: grupoId, desc, val, pessoa, parcelaAtual: 1, totalParcelas: 1, ts: Date.now() });
+  }
+
+  salvarGastos(gastos);
 
   document.getElementById('descricao').value = '';
   document.getElementById('valor').value = '';
   document.getElementById('pessoa').value = '';
+  if (parcelarAtivo) toggleParcela();
+  document.getElementById('numParcelas').value = '';
 
-  renderizar();
+  alert(parcelas > 1 ? `${parcelas} parcelas registradas!` : 'Lançamento adicionado!');
+  setTab('resumo');
 }
 
 function remover(id) {
-  const dados = carregar().filter(d => d.id !== id);
-  salvar(dados);
+  if (!confirm('Remover este lançamento?')) return;
+  const gastos = carregarGastos().filter(g => g.id !== id);
+  salvarGastos(gastos);
   renderizar();
 }
 
-function formatVal(v) {
-  return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-
-function formatData(ts) {
-  const d = new Date(ts);
-  return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
-}
+// ---- RENDER ----
+function formatVal(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+function formatData(ts) { return new Date(ts).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' }); }
 
 function setFiltro(pessoa) {
   filtroAtivo = filtroAtivo === pessoa ? null : pessoa;
   renderizar();
 }
-
-function limparFiltro() {
-  filtroAtivo = null;
-  renderizar();
-}
+function limparFiltro() { filtroAtivo = null; renderizar(); }
 
 function renderizar() {
-  const dados = carregar();
+  const gastos = carregarGastos();
+  const pessoas = carregarPessoas();
 
-  // Totais por pessoa
+  // Totais
   const totais = {};
   const qtds = {};
-  PESSOAS.forEach(p => { totais[p] = 0; qtds[p] = 0; });
-  dados.forEach(d => { totais[d.pessoa] += d.val; qtds[d.pessoa]++; });
+  pessoas.forEach(p => { totais[p] = 0; qtds[p] = 0; });
+  gastos.forEach(g => {
+    if (totais[g.pessoa] !== undefined) { totais[g.pessoa] += g.val; qtds[g.pessoa]++; }
+  });
 
   const totalGeral = Object.values(totais).reduce((a,b) => a+b, 0);
   document.getElementById('totalGeral').textContent = formatVal(totalGeral);
 
-  // Resumo
+  // Resumo cards
   const resumoEl = document.getElementById('resumo');
-  resumoEl.innerHTML = PESSOAS.map(p => `
-    <div class="card-pessoa ${filtroAtivo === p ? 'ativo' : ''}" onclick="setFiltro('${p}')" style="border-color: ${filtroAtivo === p ? CORES[p] : ''}">
-      <div class="pessoa-nome" style="color:${CORES[p]}">${p}</div>
-      <div class="pessoa-valor">${formatVal(totais[p])}</div>
-      <div class="pessoa-qtd">${qtds[p]} lançamento${qtds[p] !== 1 ? 's' : ''}</div>
-    </div>
-  `).join('');
+  if (pessoas.length === 0) {
+    resumoEl.innerHTML = '<div class="empty" style="grid-column:span 2">Cadastre pessoas na aba Pessoas.</div>';
+  } else {
+    resumoEl.innerHTML = pessoas.map((p, i) => `
+      <div class="card-pessoa ${filtroAtivo === p ? 'ativo' : ''}" onclick="setFiltro('${p}')"
+        style="${filtroAtivo === p ? 'border-color:'+corPessoa(i) : ''}">
+        <div class="pessoa-nome" style="color:${corPessoa(i)}">${p}</div>
+        <div class="pessoa-valor">${formatVal(totais[p] || 0)}</div>
+        <div class="pessoa-qtd">${qtds[p] || 0} lançamento${(qtds[p]||0) !== 1 ? 's' : ''}</div>
+      </div>
+    `).join('');
+  }
 
-  // Botão filtro
+  // Filtro btn
   const btnFiltro = document.getElementById('btnFiltro');
+  const idxFiltro = pessoas.indexOf(filtroAtivo);
   btnFiltro.textContent = filtroAtivo ? `✕ ${filtroAtivo}` : 'todos';
-  btnFiltro.style.color = filtroAtivo ? CORES[filtroAtivo] : 'var(--accent)';
+  btnFiltro.style.color = filtroAtivo && idxFiltro >= 0 ? corPessoa(idxFiltro) : 'var(--accent)';
 
   // Lista
   const listaEl = document.getElementById('lista');
-  const filtrados = filtroAtivo ? dados.filter(d => d.pessoa === filtroAtivo) : dados;
-
+  const filtrados = filtroAtivo ? gastos.filter(g => g.pessoa === filtroAtivo) : gastos;
   if (filtrados.length === 0) {
     listaEl.innerHTML = '<div class="empty">Nenhum lançamento.</div>';
     return;
   }
+  const idxMap = {};
+  pessoas.forEach((p,i) => idxMap[p] = i);
 
-  listaEl.innerHTML = filtrados.map(d => `
-    <div class="item">
-      <div class="item-info">
-        <div class="item-desc">${d.desc}</div>
-        <div class="item-meta">${formatData(d.ts)} · <span style="color:${CORES[d.pessoa]}">${d.pessoa}</span></div>
+  listaEl.innerHTML = filtrados.map(g => {
+    const cor = corPessoa(idxMap[g.pessoa] ?? 0);
+    const parcelaTag = g.totalParcelas > 1
+      ? `<span class="item-parcela">${g.parcelaAtual}/${g.totalParcelas}</span>`
+      : '';
+    return `
+      <div class="item">
+        <div class="item-info">
+          <div class="item-desc">${g.desc}${parcelaTag}</div>
+          <div class="item-meta">${formatData(g.ts)} · <span style="color:${cor}">${g.pessoa}</span></div>
+        </div>
+        <div class="item-valor">${formatVal(g.val)}</div>
+        <button class="btn-del" onclick="remover(${g.id})">×</button>
       </div>
-      <div class="item-valor">${formatVal(d.val)}</div>
-      <button class="btn-del" onclick="remover(${d.id})">×</button>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
+// ---- WHATSAPP ----
 function exportarWhatsApp() {
-  const dados = carregar();
+  const gastos = carregarGastos();
+  const pessoas = carregarPessoas();
   const totais = {};
-  PESSOAS.forEach(p => totais[p] = 0);
-  dados.forEach(d => totais[d.pessoa] += d.val);
+  pessoas.forEach(p => totais[p] = 0);
+  gastos.forEach(g => { if (totais[g.pessoa] !== undefined) totais[g.pessoa] += g.val; });
   const total = Object.values(totais).reduce((a,b) => a+b, 0);
-
   const hoje = new Date().toLocaleDateString('pt-BR');
+
   let msg = `💳 *RESUMO CARTÃO* — ${hoje}\n\n`;
-  PESSOAS.forEach(p => {
+  pessoas.forEach(p => {
     if (totais[p] > 0) {
-      msg += `👤 *${p}*: ${formatVal(totais[p])}\n`;
+      msg += `👤 *${p}*: ${totais[p].toLocaleString('pt-BR', {style:'currency',currency:'BRL'})}\n`;
+      const gp = gastos.filter(g => g.pessoa === p);
+      gp.forEach(g => {
+        const parc = g.totalParcelas > 1 ? ` (${g.parcelaAtual}/${g.totalParcelas})` : '';
+        msg += `  • ${g.desc}${parc}: ${g.val.toLocaleString('pt-BR', {style:'currency',currency:'BRL'})}\n`;
+      });
+      msg += '\n';
     }
   });
-  msg += `\n💰 *Total: ${formatVal(total)}*`;
+  msg += `💰 *Total geral: ${total.toLocaleString('pt-BR', {style:'currency',currency:'BRL'})}*`;
 
-  const encoded = encodeURIComponent(msg);
-  window.open(`https://wa.me/?text=${encoded}`, '_blank');
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
-// Init
+// ---- INIT ----
 renderizar();
 </script>
 </body>
