@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gastos Cartao</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0d0f;--surface:#16161a;--border:#2a2a32;--accent:#c8f135;--accent2:#ff6b35;--text:#f0f0f0;--muted:#666;--r:8px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+h1{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800}
+h1 span{color:var(--accent)}
+.tg{font-size:.75rem;color:var(--muted);text-align:right}
+.tg strong{display:block;font-size:1.1rem;color:var(--accent);font-family:'Syne',sans-serif}
+.tabs{display:flex;gap:6px;margin-bottom:20px}
+.tab{flex:1;padding:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);cursor:pointer;text-align:center;text-transform:uppercase;letter-spacing:1px}
+.tab.ativo{border-color:var(--accent);color:var(--accent)}
+.secao{display:none}
+.secao.ativo{display:block}
+.resumo{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.card-pessoa{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px;cursor:pointer}
+.card-pessoa.ativo{border-color:var(--accent)}
+.pnome{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.pval{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700}
+.pqtd{font-size:.6rem;color:var(--muted);margin-top:2px}
+.fsec{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px}
+.ftitle{font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px}
+.frow{display:flex;gap:8px;margin-bottom:8px}
+input,select{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'DM Mono',monospace;font-size:.85rem;padding:10px 12px;outline:none;width:100%}
+input:focus,select:focus{border-color:var(--accent)}
+select option{background:#1a1a1e}
+.prow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.togp{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);color:var(--muted);font-family:'DM Mono',monospace;font-size:.72rem;padding:8px 12px;cursor:pointer;white-space:nowrap}
+.togp.ativo{border-color:var(--accent2);color:var(--accent2)}
+.pinput{display:none}
+.pinput.show{display:flex;flex:1;align-items:center;gap:6px}
+.pinput input{width:70px;min-width:70px;text-align:center}
+.pinput span{font-size:.72rem;color:var(--muted);white-space:nowrap}
+.btnadd{background:var(--accent);color:#0d0d0f;border:none;border-radius:var(--r);font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;padding:11px;cursor:pointer;width:100%;margin-top:4px}
+.lh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.lt{font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.fb{font-size:.65rem;color:var(--accent);cursor:pointer;background:none;border:none;font-family:'DM Mono',monospace}
+.lista{display:flex;flex-direction:column;gap:6px}
+.item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;display:flex;align-items:center;gap:8px}
+.iinfo{flex:1;min-width:0}
+.idesc{font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.imeta{font-size:.62rem;color:var(--muted);margin-top:2px}
+.iparc{display:inline-block;font-size:.6rem;padding:1px 6px;border-radius:10px;background:rgba(255,107,53,.15);color:var(--accent2);margin-left:4px}
+.ival{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--accent2);white-space:nowrap}
+.bdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;padding:2px 4px;line-height:1}
+.empty{text-align:center;padding:32px;color:var(--muted);font-size:.8rem}
+.plista{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.pitem{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px;display:flex;align-items:center;justify-content:space-between}
+.brem{background:none;border:1px solid #ff444444;border-radius:6px;color:#ff6666;font-family:'DM Mono',monospace;font-size:.7rem;padding:4px 10px;cursor:pointer}
+.aprow{display:flex;gap:8px}
+.bap{background:var(--surface);border:1px solid var(--accent);border-radius:var(--r);color:var(--accent);font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;padding:10px 16px;cursor:pointer;white-space:nowrap}
+.bwpp{display:flex;align-items:center;justify-content:center;gap:8px;background:#25d366;color:#fff;border:none;border-radius:var(--r);font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;padding:12px;width:100%;margin-top:16px;cursor:pointer}
+.aviso{font-size:.62rem;color:var(--muted);text-align:center;margin-top:8px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+</style>
+</head>
+<body>
+<header>
+  <h1>&#128179; <span>Cartao</span></h1>
+  <div class="tg"><span>total geral</span><strong id="tg">R$ 0,00</strong></div>
+</header>
+<div class="tabs">
+  <div class="tab ativo" onclick="setTab('resumo')">Resumo</div>
+  <div class="tab" onclick="setTab('lancar')">Lancar</div>
+  <div class="tab" onclick="setTab('pessoas')">Pessoas</div>
+</div>
+<div class="secao ativo" id="tab-resumo">
+  <div class="resumo" id="resumo"></div>
+  <div class="lh">
+    <span class="lt">lancamentos</span>
+    <button class="fb" id="btnf" onclick="limparFiltro()">todos</button>
+  </div>
+  <div class="lista" id="lista"></div>
+  <button class="bwpp" onclick="exportarWpp()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.047L.786 23.207a.5.5 0 0 0 .619.619l4.195-1.498A11.953 11.953 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.371l-.36-.214-3.724 1.329 1.353-3.648-.235-.374A9.818 9.818 0 0 1 12 2.182c5.426 0 9.818 4.392 9.818 9.818 0 5.427-4.392 9.818-9.818 9.818z"/></svg>
+    Exportar Resumo
+  </button>
+  <div class="aviso">Gastos simples: removidos apos 60 dias - Parcelados: mantidos ate ultima parcela</div>
+</div>
+<div class="secao" id="tab-lancar">
+  <div class="fsec">
+    <div class="ftitle">+ novo lancamento</div>
+    <div class="frow"><input type="text" id="desc" placeholder="Descricao do gasto"/></div>
+    <div class="frow">
+      <input type="number" id="valor" placeholder="R$ valor" step="0.01" min="0"/>
+      <select id="pessoa"></select>
+    </div>
+    <div class="frow"><input type="date" id="data"/></div>
+    <div class="prow">
+      <button class="togp" id="btntogp" onclick="toggleP()">+ Parcelar</button>
+      <div class="pinput" id="pinput">
+        <input type="number" id="nparc" placeholder="ex: 5" min="2" max="48"/>
+        <span>parcelas</span>
+      </div>
+    </div>
+    <button class="btnadd" onclick="adicionar()">ADICIONAR</button>
+  </div>
+</div>
+<div class="secao" id="tab-pessoas">
+  <div class="fsec">
+    <div class="ftitle">gerenciar pessoas</div>
+    <div class="plista" id="plista"></div>
+    <div class="aprow">
+      <input type="text" id="novap" placeholder="Nome da pessoa"/>
+      <button class="bap" onclick="addPessoa()">ADD</button>
+    </div>
+  </div>
+</div>
+<script>
+var CORES=['#c8f135','#ff6b35','#35b8ff','#b035ff','#ff35a8','#35ffd4','#ffd435','#ff3535'];
+var parcelarAtivo=false;
+var filtroAtivo=null;
+
+function spessoas(p){localStorage.setItem('gc_p',JSON.stringify(p));}
+function lpessoas(){var r=localStorage.getItem('gc_p');return r?JSON.parse(r):[];}
+function sgastos(g){localStorage.setItem('gc_g',JSON.stringify(g));}
+function lgastos(){
+  var r=localStorage.getItem('gc_g');
+  if(!r)return[];
+  var g=JSON.parse(r);
+  var lim=Date.now()-(60*24*60*60*1000);
+  return g.filter(function(x){
+    if(x.totalP&&x.totalP>1)return true;
+    return x.ts>lim;
+  });
+}
+
+function setTab(nome){
+  var tabs=document.querySelectorAll('.tab');
+  var idx=['resumo','lancar','pessoas'].indexOf(nome);
+  tabs.forEach(function(t){t.classList.remove('ativo');});
+  if(idx>=0)tabs[idx].classList.add('ativo');
+  document.querySelectorAll('.secao').forEach(function(s){s.classList.remove('ativo');});
+  document.getElementById('tab-'+nome).classList.add('ativo');
+  if(nome==='resumo')render();
+  if(nome==='lancar'){renderSel();setDataHoje();}
+  if(nome==='pessoas')renderP();
+}
+
+function toggleP(){
+  parcelarAtivo=!parcelarAtivo;
+  document.getElementById('btntogp').classList.toggle('ativo',parcelarAtivo);
+  document.getElementById('pinput').classList.toggle('show',parcelarAtivo);
+  document.getElementById('btntogp').textContent=parcelarAtivo?'x Parcelar':'+ Parcelar';
+}
+
+function cor(i){return CORES[i%CORES.length];}
+
+function renderSel(){
+  var pp=lpessoas();
+  var s=document.getElementById('pessoa');
+  s.innerHTML='<option value="">Quem?</option>'+pp.map(function(p){return '<option value="'+p+'">'+p+'</option>';}).join('');
+}
+
+function renderP(){
+  var pp=lpessoas();
+  var el=document.getElementById('plista');
+  if(pp.length===0){el.innerHTML='<div class="empty">Nenhuma pessoa cadastrada.</div>';return;}
+  el.innerHTML=pp.map(function(p,i){
+    return '<div class="pitem"><span><span class="dot" style="background:'+cor(i)+'"></span>'+p+'</span><button class="brem" onclick="remP(\''+p+'\')">remover</button></div>';
+  }).join('');
+}
+
+function addPessoa(){
+  var input=document.getElementById('novap');
+  var nome=input.value.trim();
+  if(!nome)return;
+  var pp=lpessoas();
+  if(pp.indexOf(nome)>=0){alert('Ja cadastrado.');return;}
+  pp.push(nome);spessoas(pp);input.value='';renderP();
+}
+
+function remP(nome){
+  if(!confirm('Remover '+nome+'?'))return;
+  spessoas(lpessoas().filter(function(p){return p!==nome;}));
+  renderP();
+}
+
+function setDataHoje(){
+  var d=new Date();
+  var mm=String(d.getMonth()+1).padStart(2,'0');
+  var dd=String(d.getDate()).padStart(2,'0');
+  document.getElementById('data').value=d.getFullYear()+'-'+mm+'-'+dd;
+}
+
+function adicionar(){
+  var desc=document.getElementById('desc').value.trim();
+  var val=parseFloat(document.getElementById('valor').value);
+  var pessoa=document.getElementById('pessoa').value;
+  var parc=parcelarAtivo?parseInt(document.getElementById('nparc').value):1;
+  var dataVal=document.getElementById('data').value;
+  var ts=dataVal?new Date(dataVal+'T12:00:00').getTime():Date.now();
+  if(!desc){alert('Informe a descricao.');return;}
+  if(!val||val<=0){alert('Valor invalido.');return;}
+  if(!pessoa){alert('Selecione a pessoa.');return;}
+  if(parcelarAtivo&&(!parc||parc<2)){alert('Minimo 2 parcelas.');return;}
+  var gastos=lgastos();
+  var gid=Date.now();
+  if(parc>1){
+    for(var i=1;i<=parc;i++){
+      gastos.unshift({id:gid+i,gid:gid,desc:desc,val:val,pessoa:pessoa,parcAtual:i,totalP:parc,ts:ts});
+    }
+  }else{
+    gastos.unshift({id:gid,gid:gid,desc:desc,val:val,pessoa:pessoa,parcAtual:1,totalP:1,ts:ts});
+  }
+  sgastos(gastos);
+  document.getElementById('desc').value='';
+  document.getElementById('valor').value='';
+  document.getElementById('pessoa').value='';
+  if(parcelarAtivo)toggleP();
+  document.getElementById('nparc').value='';
+  alert(parc>1?parc+' parcelas registradas!':'Lancamento adicionado!');
+  setTab('resumo');
+}
+
+function remGrupo(gid,totalP){
+  var gastos=lgastos();
+  if(totalP>1){
+    if(!confirm('Remover todas as parcelas?'))return;
+    gastos=gastos.filter(function(g){return g.gid!==gid;});
+  }else{
+    if(!confirm('Remover?'))return;
+    gastos=gastos.filter(function(g){return g.id!==gid;});
+  }
+  sgastos(gastos);render();
+}
+
+function fv(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+function fd(ts){return new Date(ts).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});}
+
+function setFiltro(p){filtroAtivo=filtroAtivo===p?null:p;render();}
+function limparFiltro(){filtroAtivo=null;render();}
+
+function agrupar(gastos){
+  var grupos={};var ordem=[];
+  gastos.forEach(function(g){
+    var k=g.totalP>1?String(g.gid):String(g.id);
+    if(!grupos[k]){grupos[k]=Object.assign({},g,{_ps:[g]});ordem.push(k);}
+    else{grupos[k]._ps.push(g);}
+  });
+  return ordem.map(function(k){return grupos[k];});
+}
+
+function render(){
+  var gastos=lgastos();
+  var pessoas=lpessoas();
+  var totais={};var qtds={};
+  pessoas.forEach(function(p){totais[p]=0;qtds[p]=0;});
+  gastos.forEach(function(g){if(totais[g.pessoa]!==undefined){totais[g.pessoa]+=g.val;}});
+
+  // contar grupos distintos por pessoa
+  var qg={};pessoas.forEach(function(p){qg[p]=0;});
+  var vistos={};
+  gastos.forEach(function(g){
+    var k=g.totalP>1?String(g.gid):String(g.id);
+    if(!vistos[k]){vistos[k]=1;if(qg[g.pessoa]!==undefined)qg[g.pessoa]++;}
+  });
+
+  var total=Object.values(totais).reduce(function(a,b){return a+b;},0);
+  document.getElementById('tg').textContent=fv(total);
+
+  var rel=document.getElementById('resumo');
+  if(pessoas.length===0){
+    rel.innerHTML='<div class="empty" style="grid-column:span 2">Cadastre pessoas na aba Pessoas.</div>';
+  }else{
+    rel.innerHTML=pessoas.map(function(p,i){
+      var ativo=filtroAtivo===p?'ativo':'';
+      var bstyle=filtroAtivo===p?'border-color:'+cor(i):'';
+      return '<div class="card-pessoa '+ativo+'" onclick="setFiltro(\''+p+'\')" style="'+bstyle+'">'
+        +'<div class="pnome" style="color:'+cor(i)+'">'+p+'</div>'
+        +'<div class="pval">'+fv(totais[p]||0)+'</div>'
+        +'<div class="pqtd">'+(qg[p]||0)+' lancamento'+(qg[p]!==1?'s':'')+'</div>'
+        +'</div>';
+    }).join('');
+  }
+
+  var btnf=document.getElementById('btnf');
+  var idxf=pessoas.indexOf(filtroAtivo);
+  btnf.textContent=filtroAtivo?'x '+filtroAtivo:'todos';
+  btnf.style.color=filtroAtivo&&idxf>=0?cor(idxf):'var(--accent)';
+
+  var lel=document.getElementById('lista');
+  var filtrados=filtroAtivo?gastos.filter(function(g){return g.pessoa===filtroAtivo;}):gastos;
+  if(filtrados.length===0){lel.innerHTML='<div class="empty">Nenhum lancamento.</div>';return;}
+
+  var idxMap={};pessoas.forEach(function(p,i){idxMap[p]=i;});
+  var ag=agrupar(filtrados);
+
+  lel.innerHTML=ag.map(function(g){
+    var c=cor(idxMap[g.pessoa]!==undefined?idxMap[g.pessoa]:0);
+    var isP=g.totalP>1;
+    var vtotal=isP?g.val*g.totalP:g.val;
+    var ptag=isP?'<span class="iparc">'+g.totalP+'x '+fv(g.val)+'</span>':'';
+    var delid=isP?g.gid:g.id;
+    return '<div class="item">'
+      +'<div class="iinfo">'
+      +'<div class="idesc">'+g.desc+ptag+'</div>'
+      +'<div class="imeta">'+fd(g.ts)+' - <span style="color:'+c+'">'+g.pessoa+'</span></div>'
+      +'</div>'
+      +'<div class="ival">'+fv(vtotal)+'</div>'
+      +'<button class="bdel" onclick="remGrupo('+delid+','+g.totalP+')">x</button>'
+      +'</div>';
+  }).join('');
+}
+
+function exportarWpp(){
+  var gastos=lgastos();
+  var pessoas=lpessoas();
+  var totais={};
+  pessoas.forEach(function(p){totais[p]=0;});
+  gastos.forEach(function(g){if(totais[g.pessoa]!==undefined)totais[g.pessoa]+=g.val;});
+  var total=Object.values(totais).reduce(function(a,b){return a+b;},0);
+  var hoje=new Date().toLocaleDateString('pt-BR');
+  var msg='RESUMO CARTAO - '+hoje+'\n\n';
+  pessoas.forEach(function(p){
+    if(totais[p]>0){
+      msg+='* '+p+': '+fv(totais[p])+'\n';
+      var gp=gastos.filter(function(g){return g.pessoa===p;});
+      var ag=agrupar(gp);
+      ag.forEach(function(g){
+        if(g.totalP>1){
+          msg+='  - '+g.desc+': '+g.totalP+'x '+fv(g.val)+' = '+fv(g.val*g.totalP)+'\n';
+        }else{
+          msg+='  - '+g.desc+': '+fv(g.val)+'\n';
+        }
+      });
+      msg+='\n';
+    }
+  });
+  msg+='Total geral: '+fv(total);
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+render();
+</script>
+</body>
+</html>
