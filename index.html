@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gastos Cartão</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #16161a;
+    --border: #2a2a32;
+    --accent: #c8f135;
+    --accent2: #ff6b35;
+    --text: #f0f0f0;
+    --muted: #666;
+    --r: 8px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Mono', monospace; background: var(--bg); color: var(--text); min-height: 100vh; padding: 16px; }
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  h1 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+  h1 span { color: var(--accent); }
+  .total-geral { font-size: 0.75rem; color: var(--muted); text-align: right; }
+  .total-geral strong { display: block; font-size: 1.1rem; color: var(--accent); font-family: 'Syne', sans-serif; }
+
+  .tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+  .tab { flex: 1; padding: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); cursor: pointer; text-align: center; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s; }
+  .tab.ativo { border-color: var(--accent); color: var(--accent); }
+
+  .secao { display: none; }
+  .secao.ativo { display: block; }
+
+  .resumo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .card-pessoa { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; cursor: pointer; transition: border-color 0.2s; position: relative; overflow: hidden; }
+  .card-pessoa.ativo { border-color: var(--accent); }
+  .card-pessoa::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent); opacity: 0; transition: opacity 0.2s; }
+  .card-pessoa.ativo::before { opacity: 1; }
+  .pessoa-nome { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .pessoa-valor { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
+  .pessoa-qtd { font-size: 0.6rem; color: var(--muted); margin-top: 2px; }
+
+  .form-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; margin-bottom: 20px; }
+  .form-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; }
+  .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  input, select { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.85rem; padding: 10px 12px; outline: none; transition: border-color 0.2s; width: 100%; }
+  input:focus, select:focus { border-color: var(--accent); }
+  select option { background: #1a1a1e; }
+  .parcelas-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .toggle-parcela { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 8px 12px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+  .toggle-parcela.ativo { border-color: var(--accent2); color: var(--accent2); }
+  .parcelas-input { display: none; }
+  .parcelas-input.show { display: flex; flex: 1; align-items: center; gap: 6px; }
+  .parcelas-input input { width: 70px; min-width: 70px; text-align: center; }
+  .parcelas-input span { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+  .btn-add { background: var(--accent); color: #0d0d0f; border: none; border-radius: var(--r); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; padding: 11px; cursor: pointer; width: 100%; margin-top: 4px; transition: opacity 0.2s, transform 0.1s; }
+  .btn-add:active { transform: scale(0.98); opacity: 0.9; }
+
+  .lancamentos-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .lancamentos-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .filtro-btn { font-size: 0.65rem; color: var(--accent); cursor: pointer; background: none; border: none; font-family: 'DM Mono', monospace; }
+  .lista { display: flex; flex-direction: column; gap: 6px; }
+  .item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 10px 12px; display: flex; align-items: center; gap: 8px; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  .item-info { flex: 1; min-width: 0; }
+  .item-desc { font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-meta { font-size: 0.62rem; color: var(--muted); margin-top: 2px; }
+  .item-parcela { display: inline-block; font-size: 0.6rem; padding: 1px 6px; border-radius: 10px; background: rgba(255,107,53,0.15); color: var(--accent2); margin-left: 4px; }
+  .item-valor { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--accent2); white-space: nowrap; }
+  .btn-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; padding: 2px 4px; line-height: 1; transition: color 0.2s; }
+  .btn-del:hover { color: #ff4444; }
+  .empty { text-align: center; padding: 32px; color: var(--muted); font-size: 0.8rem; }
+
+  .pessoas-lista { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .pessoa-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .pessoa-item-nome { font-size: 0.85rem; }
+  .btn-remover-pessoa { background: none; border: 1px solid #ff444444; border-radius: 6px; color: #ff6666; font-family: 'DM Mono', monospace; font-size: 0.7rem; padding: 4px 10px; cursor: pointer; transition: all 0.2s; }
+  .btn-remover-pessoa:hover { background: #ff444422; }
+  .add-pessoa-row { display: flex; gap: 8px; }
+  .btn-add-pessoa { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--r); color: var(--accent); font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 10px 16px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+  .btn-add-pessoa:active { opacity: 0.8; }
+
+  .btn-wpp { display: flex; align-items: center; justify-content: center; gap: 8px; background: #25d366; color: #fff; border: none; border-radius: var(--r); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px; width: 100%; margin-top: 16px; cursor: pointer; transition: opacity 0.2s; }
+  .btn-wpp:active { opacity: 0.85; }
+  .aviso { font-size: 0.62rem; color: var(--muted); text-align: center; margin-top: 8px; }
+
+  .cor-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💳 <span>Cartão</span></h1>
+  <div class="total-geral">
+    <span>total geral</span>
+    <strong id="totalGeral">R$ 0,00</strong>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab ativo" onclick="setTab('resumo')">Resumo</div>
+  <div class="tab" onclick="setTab('lancar')">Lançar</div>
+  <div class="tab" onclick="setTab('pessoas')">Pessoas</div>
+</div>
+
+<!-- ABA RESUMO -->
+<div class="secao ativo" id="tab-resumo">
+  <div class="resumo" id="resumo"></div>
+  <div class="lancamentos-header">
+    <span class="lancamentos-title">lançamentos</span>
+    <button class="filtro-btn" id="btnFiltro" onclick="limparFiltro()">todos</button>
+  </div>
+  <div class="lista" id="lista"></div>
+  <button class="btn-wpp" onclick="exportarWhatsApp()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.047L.786 23.207a.5.5 0 0 0 .619.619l4.195-1.498A11.953 11.953 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.371l-.36-.214-3.724 1.329 1.353-3.648-.235-.374A9.818 9.818 0 0 1 12 2.182c5.426 0 9.818 4.392 9.818 9.818 0 5.427-4.392 9.818-9.818 9.818z"/></svg>
+    Exportar Resumo
+  </button>
+  <div class="aviso">Gastos simples: removidos após 60 dias · Parcelados: mantidos até última parcela</div>
+</div>
+
+<!-- ABA LANÇAR -->
+<div class="secao" id="tab-lancar">
+  <div class="form-section">
+    <div class="form-title">+ novo lançamento</div>
+    <div class="form-row">
+      <input type="text" id="descricao" placeholder="Descrição do gasto" />
+    </div>
+    <div class="form-row">
+      <input type="number" id="valor" placeholder="R$ valor" step="0.01" min="0" />
+      <select id="pessoa"></select>
+    </div>
+    <div class="parcelas-row">
+      <button class="toggle-parcela" id="btnParcela" onclick="toggleParcela()">+ Parcelar</button>
+      <div class="parcelas-input" id="parcelasInput">
+        <input type="number" id="numParcelas" placeholder="ex: 5" min="2" max="48" />
+        <span>parcelas</span>
+      </div>
+    </div>
+    <button class="btn-add" onclick="adicionar()">ADICIONAR</button>
+  </div>
+</div>
+
+<!-- ABA PESSOAS -->
+<div class="secao" id="tab-pessoas">
+  <div class="form-section">
+    <div class="form-title">gerenciar pessoas</div>
+    <div class="pessoas-lista" id="pessoasLista"></div>
+    <div class="add-pessoa-row">
+      <input type="text" id="novaPessoa" placeholder="Nome da pessoa" />
+      <button class="btn-add-pessoa" onclick="adicionarPessoa()">ADD</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CORES = ['#c8f135','#ff6b35','#35b8ff','#b035ff','#ff35a8','#35ffd4','#ffd435','#ff3535'];
+
+let parcelarAtivo = false;
+let filtroAtivo = null;
+
+function salvarPessoas(p) { localStorage.setItem('gc_pessoas', JSON.stringify(p)); }
+function carregarPessoas() {
+  const raw = localStorage.getItem('gc_pessoas');
+  return raw ? JSON.parse(raw) : [];
+}
+function salvarGastos(g) { localStorage.setItem('gc_gastos', JSON.stringify(g)); }
+function carregarGastos() {
+  const raw = localStorage.getItem('gc_gastos');
+  if (!raw) return [];
+  const gastos = JSON.parse(raw);
+  const agora = Date.now();
+  const limite60 = agora - (60 * 24 * 60 * 60 * 1000);
+  return gastos.filter(g => {
+    if (g.totalParcelas && g.totalParcelas > 1) return true;
+    return g.ts > limite60;
+  });
+}
+
+function setTab(nome) {
+  const tabs = document.querySelectorAll('.tab');
+  const idx = ['resumo','lancar','pessoas'].indexOf(nome);
+  tabs.forEach(t => t.classList.remove('ativo'));
+  if (idx >= 0) tabs[idx].classList.add('ativo');
+  document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativo'));
+  document.getElementById('tab-' + nome).classList.add('ativo');
+  if (nome === 'resumo') renderizar();
+  if (nome === 'lancar') renderSelectPessoa();
+  if (nome === 'pessoas') renderPessoas();
+}
+
+function toggleParcela() {
+  parcelarAtivo = !parcelarAtivo;
+  document.getElementById('btnParcela').classList.toggle('ativo', parcelarAtivo);
+  document.getElementById('parcelasInput').classList.toggle('show', parcelarAtivo);
+  document.getElementById('btnParcela').textContent = parcelarAtivo ? '✕ Parcelar' : '+ Parcelar';
+}
+
+function corPessoa(idx) { return CORES[idx % CORES.length]; }
+
+function renderSelectPessoa() {
+  const pessoas = carregarPessoas();
+  const sel = document.getElementById('pessoa');
+  sel.innerHTML = '<option value="">Quem?</option>' +
+    pessoas.map(p => `<option value="${p}">${p}</option>`).join('');
+}
+
+function renderPessoas() {
+  const pessoas = carregarPessoas();
+  const el = document.getElementById('pessoasLista');
+  if (pessoas.length === 0) {
+    el.innerHTML = '<div class="empty">Nenhuma pessoa cadastrada.</div>';
+    return;
+  }
+  el.innerHTML = pessoas.map((p, i) => `
+    <div class="pessoa-item">
+      <span><span class="cor-dot" style="background:${corPessoa(i)}"></span>${p}</span>
+      <button class="btn-remover-pessoa" onclick="removerPessoa('${p}')">remover</button>
+    </div>
+  `).join('');
+}
+
+function adicionarPessoa() {
+  const input = document.getElementById('novaPessoa');
+  const nome = input.value.trim();
+  if (!nome) return;
+  const pessoas = carregarPessoas();
+  if (pessoas.includes(nome)) { alert('Nome já cadastrado.'); return; }
+  pessoas.push(nome);
+  salvarPessoas(pessoas);
+  input.value = '';
+  renderPessoas();
+}
+
+function removerPessoa(nome) {
+  if (!confirm(`Remover ${nome}?`)) return;
+  const pessoas = carregarPessoas().filter(p => p !== nome);
+  salvarPessoas(pessoas);
+  renderPessoas();
+}
+
+function adicionar() {
+  const desc = document.getElementById('descricao').value.trim();
+  const val = parseFloat(document.getElementById('valor').value);
+  const pessoa = document.getElementById('pessoa').value;
+  const parcelas = parcelarAtivo ? parseInt(document.getElementById('numParcelas').value) : 1;
+
+  if (!desc) { alert('Informe a descrição.'); return; }
+  if (!val || val <= 0) { alert('Informe um valor válido.'); return; }
+  if (!pessoa) { alert('Selecione a pessoa.'); return; }
+  if (parcelarAtivo && (!parcelas || parcelas < 2)) { alert('Informe o número de parcelas (mínimo 2).'); return; }
+
+  const gastos = carregarGastos();
+  const grupoId = Date.now();
+
+  if (parcelas > 1) {
+    for (let i = 1; i <= parcelas; i++) {
+      gastos.unshift({
+        id: grupoId + i,
+        grupoId,
+        desc,
+        val,
+        pessoa,
+        parcelaAtual: i,
+        totalParcelas: parcelas,
+        ts: Date.now()
+      });
+    }
+  } else {
+    gastos.unshift({ id: grupoId, desc, val, pessoa, parcelaAtual: 1, totalParcelas: 1, ts: Date.now() });
+  }
+
+  salvarGastos(gastos);
+
+  document.getElementById('descricao').value = '';
+  document.getElementById('valor').value = '';
+  document.getElementById('pessoa').value = '';
+  if (parcelarAtivo) toggleParcela();
+  document.getElementById('numParcelas').value = '';
+
+  alert(parcelas > 1 ? `${parcelas} parcelas registradas!` : 'Lançamento adicionado!');
+  setTab('resumo');
+}
+
+function removerGrupo(grupoId, totalParcelas) {
+  // Se parcelado, remove todas as parcelas do grupo
+  let gastos = carregarGastos();
+  if (totalParcelas > 1) {
+    if (!confirm('Remover todas as parcelas deste lançamento?')) return;
+    gastos = gastos.filter(g => g.grupoId !== grupoId);
+  } else {
+    if (!confirm('Remover este lançamento?')) return;
+    gastos = gastos.filter(g => g.id !== grupoId);
+  }
+  salvarGastos(gastos);
+  renderizar();
+}
+
+function formatVal(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+function formatData(ts) { return new Date(ts).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' }); }
+
+function setFiltro(pessoa) {
+  filtroAtivo = filtroAtivo === pessoa ? null : pessoa;
+  renderizar();
+}
+function limparFiltro() { filtroAtivo = null; renderizar(); }
+
+// Agrupa parcelas do mesmo grupoId em um único item para exibição
+function agruparParcelados(gastos) {
+  const grupos = {};
+  const ordem = [];
+
+  gastos.forEach(g => {
+    const chave = g.totalParcelas > 1 ? String(g.grupoId) : String(g.id);
+    if (!grupos[chave]) {
+      grupos[chave] = { ...g, _parcelas: [g] };
+      ordem.push(chave);
+    } else {
+      grupos[chave]._parcelas.push(g);
+    }
+  });
+
+  return ordem.map(k => grupos[k]);
+}
+
+function renderizar() {
+  const gastos = carregarGastos();
+  const pessoas = carregarPessoas();
+
+  // Totais consideram TODAS as parcelas individualmente (valor real da fatura)
+  const totais = {};
+  const qtds = {};
+  pessoas.forEach(p => { totais[p] = 0; qtds[p] = 0; });
+  gastos.forEach(g => {
+    if (totais[g.pessoa] !== undefined) {
+      totais[g.pessoa] += g.val;
+      qtds[g.pessoa]++;
+    }
+  });
+
+  // Qtd de itens distintos (grupos) por pessoa para exibir no card
+  const qtdsGrupos = {};
+  pessoas.forEach(p => qtdsGrupos[p] = 0);
+  const gruposVistos = new Set();
+  gastos.forEach(g => {
+    const chave = g.totalParcelas > 1 ? String(g.grupoId) : String(g.id);
+    if (!gruposVistos.has(chave)) {
+      gruposVistos.add(chave);
+      if (qtdsGrupos[g.pessoa] !== undefined) qtdsGrupos[g.pessoa]++;
+    }
+  });
+
+  const totalGeral = Object.values(totais).reduce((a,b) => a+b, 0);
+  document.getElementById('totalGeral').textContent = formatVal(totalGeral);
+
+  // Cards de resumo
+  const resumoEl = document.getElementById('resumo');
+  if (pessoas.length === 0) {
+    resumoEl.innerHTML = '<div class="empty" style="grid-column:span 2">Cadastre pessoas na aba Pessoas.</div>';
+  } else {
+    resumoEl.innerHTML = pessoas.map((p, i) => `
+      <div class="card-pessoa ${filtroAtivo === p ? 'ativo' : ''}" onclick="setFiltro('${p}')"
+        style="${filtroAtivo === p ? 'border-color:'+corPessoa(i) : ''}">
+        <div class="pessoa-nome" style="color:${corPessoa(i)}">${p}</div>
+        <div class="pessoa-valor">${formatVal(totais[p] || 0)}</div>
+        <div class="pessoa-qtd">${qtdsGrupos[p] || 0} lançamento${(qtdsGrupos[p]||0) !== 1 ? 's' : ''}</div>
+      </div>
+    `).join('');
+  }
+
+  const btnFiltro = document.getElementById('btnFiltro');
+  const idxFiltro = pessoas.indexOf(filtroAtivo);
+  btnFiltro.textContent = filtroAtivo ? `✕ ${filtroAtivo}` : 'todos';
+  btnFiltro.style.color = filtroAtivo && idxFiltro >= 0 ? corPessoa(idxFiltro) : 'var(--accent)';
+
+  // Lista — agrupa parcelas
+  const listaEl = document.getElementById('lista');
+  const filtrados = filtroAtivo ? gastos.filter(g => g.pessoa === filtroAtivo) : gastos;
+
+  if (filtrados.length === 0) {
+    listaEl.innerHTML = '<div class="empty">Nenhum lançamento.</div>';
+    return;
+  }
+
+  const idxMap = {};
+  pessoas.forEach((p,i) => idxMap[p] = i);
+
+  const agrupados = agruparParcelados(filtrados);
+
+  listaEl.innerHTML = agrupados.map(g => {
+    const cor = corPessoa(idxMap[g.pessoa] ?? 0);
+    const isParcelado = g.totalParcelas > 1;
+    const valorTotal = isParcelado ? g.val * g.totalParcelas : g.val;
+    const parcelaTag = isParcelado
+      ? `<span class="item-parcela">${g.totalParcelas}x ${formatVal(g.val)}</span>`
+      : '';
+    // id para deletar: parcelado usa grupoId, simples usa id
+    const delId = isParcelado ? g.grupoId : g.id;
+    return `
+      <div class="item">
+        <div class="item-info">
+          <div class="item-desc">${g.desc}${parcelaTag}</div>
+          <div class="item-meta">${formatData(g.ts)} · <span style="color:${cor}">${g.pessoa}</span></div>
+        </div>
+        <div class="item-valor">${formatVal(valorTotal)}</div>
+        <button class="btn-del" onclick="removerGrupo(${delId}, ${g.totalParcelas})">×</button>
+      </div>
+    `;
+  }).join('');
+}
+
+// WhatsApp — detalha parcelas individuais por pessoa
+function exportarWhatsApp() {
+  const gastos = carregarGastos();
+  const pessoas = carregarPessoas();
+  const totais = {};
+  pessoas.forEach(p => totais[p] = 0);
+  gastos.forEach(g => { if (totais[g.pessoa] !== undefined) totais[g.pessoa] += g.val; });
+  const total = Object.values(totais).reduce((a,b) => a+b, 0);
+  const hoje = new Date().toLocaleDateString('pt-BR');
+
+  let msg = `💳 *RESUMO CARTÃO* — ${hoje}\n\n`;
+  pessoas.forEach(p => {
+   if (g.totalParcelas > 1) {
+          msg += `  • ${g.desc}: ${g.totalParcelas}x ${formatVal(g.val)} = ${formatVal(g.val * g.totalParcelas)}\n`;
+          msg += `    (parcelas 1 a ${g.totalParcelas})\n`;
+        } else {
+          msg += `  • ${g.desc}: ${formatVal(g.val)}\n`;
+        }
+      });
+      msg += '\n';
+    }
+  });
+  msg += `💰 *Total geral: ${formatVal(total)}*`;
+
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+renderizar();
+</script>
+</body>
+</html>
